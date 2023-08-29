@@ -13,7 +13,7 @@ Level 4 mostly revolving around farming and dying
 level 4 feats and rewards:
 
 * craft_diamondhoe       farming:seed_wheat
-* use_hoe x40            farming:melon_slice
+* use_hoe x40            default:snow x9
 * plant_wheatseed        default:cactus
 * craft_flour            farming:seed_cotton x10
 * place_snowblock x50    dye:red x20
@@ -49,7 +49,7 @@ skyblock.levels[level].feats = {
       hint = "farming:hoe_stone",
       feat = "use_hoe",
       count = 40, 
-      reward = "farming:melon_slice",
+      reward = "default:snow 9",
       hoeuse = {}
    },
    {
