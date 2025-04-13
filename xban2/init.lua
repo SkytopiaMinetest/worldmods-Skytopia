@@ -272,55 +272,55 @@ minetest.register_chatcommand("xunban", {
 	end,
 })
 
-minetest.register_chatcommand("xban_record", {
-	description = "Show the ban records of a player",
-	params = "<player_or_ip>",
-	privs = { ban=true },
-	func = function(name, params)
-		local plname = params:match("%S+")
-		if not plname then
-			return false, "Usage: /xban_record <player_or_ip>"
-		end
-		local record, last_pos = xban.get_record(plname)
-		if not record then
-			local err = last_pos
-			minetest.chat_send_player(name, "[xban] "..err)
-			return
-		end
-		for _, e in ipairs(record) do
-			minetest.chat_send_player(name, "[xban] "..e)
-		end
-		if last_pos then
-			minetest.chat_send_player(name, "[xban] "..last_pos)
-		end
-		return true, "Record listed."
-	end,
-})
+--minetest.register_chatcommand("xban_record", {
+--	description = "Show the ban records of a player",
+--	params = "<player_or_ip>",
+--	privs = { ban=true },
+--	func = function(name, params)
+--		local plname = params:match("%S+")
+--		if not plname then
+--			return false, "Usage: /xban_record <player_or_ip>"
+--		end
+--		local record, last_pos = xban.get_record(plname)
+--		if not record then
+--			local err = last_pos
+--			minetest.chat_send_player(name, "[xban] "..err)
+--			return
+--		end
+--		for _, e in ipairs(record) do
+--			minetest.chat_send_player(name, "[xban] "..e)
+--		end
+--		if last_pos then
+--			minetest.chat_send_player(name, "[xban] "..last_pos)
+--		end
+--		return true, "Record listed."
+--	end,
+--})
 
-minetest.register_chatcommand("xban_wl", {
-	description = "Manages the whitelist",
-	params = "(add|del|get) <name_or_ip>",
-	privs = { ban=true },
-	func = function(name, params)
-		local cmd, plname = params:match("%s*(%S+)%s*(%S+)")
-		if cmd == "add" then
-			xban.add_whitelist(plname, name)
-			ACTION("%s adds %s to whitelist", name, plname)
-			return true, "Added to whitelist: "..plname
-		elseif cmd == "del" then
-			xban.remove_whitelist(plname)
-			ACTION("%s removes %s to whitelist", name, plname)
-			return true, "Removed from whitelist: "..plname
-		elseif cmd == "get" then
-			local e = xban.get_whitelist(plname)
-			if e then
-				return true, "Source: "..(e.source or "Unknown")
-			else
-				return true, "No whitelist for: "..plname
-			end
-		end
-	end,
-})
+--minetest.register_chatcommand("xban_wl", {
+--	description = "Manages the whitelist",
+--	params = "(add|del|get) <name_or_ip>",
+--	privs = { ban=true },
+--	func = function(name, params)
+--		local cmd, plname = params:match("%s*(%S+)%s*(%S+)")
+--		if cmd == "add" then
+--			xban.add_whitelist(plname, name)
+--			ACTION("%s adds %s to whitelist", name, plname)
+--			return true, "Added to whitelist: "..plname
+--		elseif cmd == "del" then
+--			xban.remove_whitelist(plname)
+--			ACTION("%s removes %s to whitelist", name, plname)
+--			return true, "Removed from whitelist: "..plname
+--		elseif cmd == "get" then
+--			local e = xban.get_whitelist(plname)
+--			if e then
+--				return true, "Source: "..(e.source or "Unknown")
+--			else
+--				return true, "No whitelist for: "..plname
+--			end
+--		end
+--	end,
+--})
 
 
 local function check_temp_bans()
@@ -383,29 +383,29 @@ local function load_db()
 	end
 end
 
-minetest.register_chatcommand("xban_cleanup", {
-	description = "Removes all non-banned entries from the xban db",
-	privs = { server=true },
-	func = function(name, params)
-		local old_count = #db
-
-		local i = 1
-		while i <= #db do
-			if not db[i].banned then
-				-- not banned, remove from db
-				table.remove(db, i)
-			else
-				-- banned, hold entry back
-				i = i + 1
-			end
-		end
-
-		-- save immediately
-		save_db()
-
-		return true, "Removed " .. (old_count - #db) .. " entries, new db entry-count: " .. #db
-	end,
-})
+--minetest.register_chatcommand("xban_cleanup", {
+--	description = "Removes all non-banned entries from the xban db",
+--	privs = { server=true },
+--	func = function(name, params)
+--		local old_count = #db
+--
+--		local i = 1
+--		while i <= #db do
+--			if not db[i].banned then
+--				-- not banned, remove from db
+--				table.remove(db, i)
+--			else
+--				-- banned, hold entry back
+--				i = i + 1
+--			end
+--		end
+--
+--		-- save immediately
+--		save_db()
+--
+--		return true, "Removed " .. (old_count - #db) .. " entries, new db entry-count: " .. #db
+--	end,
+--})
 
 minetest.register_on_shutdown(save_db)
 minetest.after(SAVE_INTERVAL, save_db)

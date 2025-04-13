@@ -131,11 +131,11 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	end
 end)
 
-minetest.register_chatcommand("xban_gui", {
-	description = "Show XBan GUI",
-	params = "",
-	privs = { ban=true, },
-	func = function(name, params)
-		minetest.show_formspec(name, FORMNAME, make_fs(name))
-	end,
-})
+--inetest.register_chatcommand("xban_gui", {
+--	description = "Show XBan GUI",
+--	params = "",
+--	privs = { ban=true, },
+--	func = function(name, params)
+--		minetest.show_formspec(name, FORMNAME, make_fs(name))
+--	end,
+--)

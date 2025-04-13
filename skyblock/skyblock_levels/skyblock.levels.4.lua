@@ -12,8 +12,8 @@ License: GPLv3
 Level 4 mostly revolving around farming and dying
 level 4 feats and rewards:
 
-* craft_diamondhoe       farming:seed_wheat
-* use_hoe x40            default:snow x9
+* craft_mesehoe       farming:seed_wheat
+* use_hoe x40            farming:melon_slice
 * plant_wheatseed        default:cactus
 * craft_flour            farming:seed_cotton x10
 * place_snowblock x50    dye:red x20
@@ -37,20 +37,21 @@ skyblock.levels[level] = {}
 -- Parts of this are purely hypothetical and not implement yet
 skyblock.levels[level].feats = {
    {
-      name = "Craft a stone hoe",
-      hint = "farming:hoe_stone",
-      feat = "craft_stone_hoe",
+      name = "Craft a mese hoe",
+      hint = "farming:hoe_mese",
+      feat = "craft_mesehoe",
       count = 1,
       reward = "farming:seed_wheat 2",
-      craft = {"farming:hoe_stone"}
+      craft = {"farming:hoe_mese"}
    },
    {
       name = "Use the hoe 40 times",
-      hint = "farming:hoe_stone",
+      hint = "farming:hoe_mese",
       feat = "use_hoe",
-      count = 40, 
-      reward = "default:snow 9",
-      hoeuse = {}
+      count = 40,
+      reward = "farming:melon_slice",
+      hoeuse = {},
+      use_item = "farming:hoe_mese"
    },
    {
       name = "Plant 10 wheat seeds",
