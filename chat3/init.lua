@@ -144,9 +144,10 @@ function chat3.send(name, msg, prefix, source)
 
 			-- Send message
 			local is_in, fname = factions.is_player_in(name)
-			local msg_new = "<"..name.."> "..msg
+			local namec = get_colored_name(name)
+			local msg_new = "<<"..namec..">> "..msg
 			if is_in == true then 
-				msg_new = "["..fname.."] <"..name.."> "..msg
+				msg_new = "["..fname.."] <<"..namec..">> "..msg
 			end
 			local send = chat3.colorize(rname, colour, msg_new)
 			if prefix then
