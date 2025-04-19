@@ -10,7 +10,7 @@ end
 
 
 factions.invite_queqe = {}
-factions.join_requests = {}
+--factions.join_requests = {}
 
 local storage = minetest.get_mod_storage()
 --factions structure = {
