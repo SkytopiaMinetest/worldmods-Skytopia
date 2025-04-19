@@ -10,7 +10,7 @@ end
 
 
 factions.invite_queqe = {}
---factions.join_requests = {}
+factions.join_requests = {}
 
 local storage = minetest.get_mod_storage()
 --factions structure = {
@@ -94,28 +94,43 @@ function factions.create_faction(name, fname)
 
 end
 
--- faction leave function
+--faction leave function
 function factions.leave_faction(name)
-    local is_in, fname = factions.is_player_in(name) 
-    if is_in == false then
+    local is_in, fname = factions.is_player_in(name)
+    if not is_in then
         minetest.chat_send_player(name, "[Server] You are not in any faction")
         return
     end
-    for i, mname in ipairs(faction_data[fname].members) do
-        if mname == name then  
-            table.remove(faction_data[fname].members, i)
-        end
-    end
-    --are there any players left?
-    if next(faction_data[fname].members) then
-        if faction_data[fname].owner == name then
+
+    local faction = faction_data[fname]
+    if not faction then return end
+    if faction.owner == name then
+        if #faction.members > 1 then
             minetest.chat_send_player(name, "[Server] You must transfer ownership before leaving. Use /faction_changeowner <playername>")
             return
+        else
+            faction_data[fname] = nil
+            minetest.chat_send_player(name, "[Server] You deleted your faction by leaving (no other members).")
+            return
         end
-    else
-        minetest.chat_send_player(name, "[Server] Deleted your faction")
-        faction_data[fname] = nil
     end
+
+    for i, mname in ipairs(faction.members) do
+        if mname == name then
+            table.remove(faction.members, i)
+            break
+        end
+    end
+
+    if faction.staffs then
+        for i, sname in ipairs(faction.staffs) do
+            if sname == name then
+                table.remove(faction.staffs, i)
+                break
+            end
+        end
+    end
+
     minetest.chat_send_player(name, "[Server] You left your faction "..fname)
 end
 
@@ -514,24 +529,38 @@ minetest.register_chatcommand("faction_info", {
     end
 })
 
-local function show_faction_pinfo_formspec(player, fname)
+local function show_faction_pinfo_formspec(player, param)
     if not player then return end
-    local faction = faction_data[fname]
-    if not faction then return end
-
     local name = player:get_player_name()
     local total_max_players = 50
+    local faction = faction_data[param]
+    if not faction then return end
 
-    local owner_list = { format_player_status(faction.owner) }
+    local function status_label(name, role)
+        local label = name .. " (" .. role .. ")"
+        if minetest.get_player_by_name(name) then
+            label = label .. " (Online)"
+        else
+            label = label .. " (Offline)"
+        end
+        return label
+    end
+
+    local owner_and_staff_list = {}
+    table.insert(owner_and_staff_list, status_label(faction.owner, "Owner"))
+
+    if faction.staffs then
+        for _, staff in ipairs(faction.staffs) do
+            if staff ~= faction.owner then
+                table.insert(owner_and_staff_list, status_label(staff, "Staff"))
+            end
+        end
+    end
 
     local member_list = {}
     for _, member in ipairs(faction.members or {}) do
-        if member ~= faction.owner then
-            local label = format_player_status(member)
-            if faction.staffs and table.contains(faction.staffs, member) then
-                label = label .. " (Staff)"
-            end
-            table.insert(member_list, label)
+        if member ~= faction.owner and not table.contains(faction.staffs or {}, member) then
+            table.insert(member_list, format_player_status(member))
         end
     end
 
@@ -543,23 +572,25 @@ local function show_faction_pinfo_formspec(player, fname)
         return table.concat(t, ",")
     end
 
-    local total_players = #owner_list + #member_list
+    local total_players = #owner_and_staff_list + #member_list
     local player_count_text = ("Number of players in the faction: %d / %d"):format(total_players, total_max_players)
 
     local formspec = {
         "formspec_version[4]",
         "size[12,9]",
+        "background[0,0;0,0;3.png;true]",
         "tabheader[0,0;faction;Faction PInfo;1;true;true]",
 
-        "label[0.3,0.5;Owner:]",
-        ("textlist[0.3,0.8;3.5,1.5;owner_list;%s;1]"):format(escape_list(owner_list)),
+        "label[0.3,0.5;Owner(s) & Staff(s):]",
+        ("textlist[0.3,0.8;4.5,1.5;owner_list;%s;1]"):format(escape_list(owner_and_staff_list)),
 
         "label[0.3,2.7;Member(s):]",
-        ("textlist[0.3,3.0;3.5,5.65;member_list;%s;1]"):format(escape_list(member_list)),
+        ("textlist[0.3,3.0;4.5,5.65;member_list;%s;1]"):format(escape_list(member_list)),
 
-        ("hypertext[6.25,1.0;11.5,3;faction_title;<style size=26><b>Faction: %s</b></style>]"):format(minetest.formspec_escape(fname)),
+        ("hypertext[6.25,1.0;11.5,3;faction_title;<style size=26><b>Faction: %s</b></style>]"):format(minetest.formspec_escape(param)),
         ("textarea[6.3,8.4;11.5,1.0;;;%s]"):format(minetest.formspec_escape(player_count_text)),
     }
+
     minetest.show_formspec(name, "faction_pinfo:main", table.concat(formspec, ""))
 end
 
@@ -791,8 +822,7 @@ minetest.register_chatcommand("f", {
             return minetest.chatcommands["faction_rankdown"].func(name, target)
 
         else
-            minetest.chat_send_player(name,"[Server] Unknown subcommand. Available: create, invite, accept, kick, leave, setbase, base, info, pinfo, disband, changeowner, rankup, rankdown")
+            minetest.chat_send_player(name,"[Server] Unknown subcommand. Available: create, invite, accept, kick, leave, setbase, base, info, pinfo, disband, changeowner, request, acceptrequest, rankup, rankdown")
         end
     end
 })
-
