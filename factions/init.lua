@@ -791,7 +791,7 @@ minetest.register_chatcommand("f", {
             return minetest.chatcommands["faction_rankdown"].func(name, target)
 
         else
-            minetest.chat_send_player(name,"[Server] Unknown subcommand. Available: create, invite, accept, kick, leave, setbase, base, info, pinfo, disband, changeowner, request, acceptrequest, rankup, rankdown")
+            minetest.chat_send_player(name,"[Server] Unknown subcommand. Available: create, invite, accept, kick, leave, setbase, base, info, pinfo, disband, changeowner, rankup, rankdown")
         end
     end
 })
