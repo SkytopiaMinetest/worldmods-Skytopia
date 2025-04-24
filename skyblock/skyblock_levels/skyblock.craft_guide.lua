@@ -17,7 +17,15 @@ group_placeholder['group:stone'] = 'default:cobble' -- 'default:stone'  point pe
 group_placeholder['group:sand'] = 'default:sand'
 group_placeholder['group:leaves'] = 'default:leaves'
 group_placeholder['group:wood_slab'] = 'stairs:slab_wood'
-group_placeholder['group:wool'] = 'wool:white'
+group_placeholder["group:wool"] = "wool:white"
+group_placeholder['group:food_meat'] = 'mobs:meat'
+group_placeholder['group:food_cheese'] = 'mobs:cheese'
+group_placeholder['group:food_tomato'] = 'farming:tomato'
+group_placeholder['group:food_cucumber'] = 'farming:cucumber'
+group_placeholder['group:food_onion'] = 'farming:onion'
+group_placeholder['group:food_lettuce'] = 'farming:lettuce'
+group_placeholder['group:food_pumpkin_slice'] = 'farming:pumpkin_slice'
+group_placeholder['group:food_flour'] = 'farming:flour_multigrain'
 
 -- handle the standard dye color groups
 minetest.after(0.5, function()

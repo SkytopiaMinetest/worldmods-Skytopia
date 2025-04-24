@@ -163,15 +163,23 @@ function skyblock.feats.give_reward(level,player_name,item_name)
 	--player:set_inventory_formspec(skyblock.levels.get_formspec(player_name))
 end
 
--- track eating
 function skyblock.feats.on_item_eat(hp_change, replace_with_item, itemstack, user, pointed_thing)
 	if not user then return end
 	local player_name = user:get_player_name()
 	local level = skyblock.feats.get_level(player_name)
 	if skyblock.levels[level].on_item_eat then
-		skyblock.levels[level].on_item_eat(player_name, itemstack)
+		local item_name = itemstack:get_name()
+		local item_count = itemstack:get_count()
+
+		minetest.after(0, function()
+			local new_stack = user:get_wielded_item()
+			if new_stack:get_name() == item_name and new_stack:get_count() < item_count then
+				skyblock.levels[level].on_item_eat(player_name, itemstack)
+			end
+		end)
 	end
 end
+
 minetest.register_on_item_eat(skyblock.feats.on_item_eat)
 
 -- track crafting
@@ -235,7 +243,7 @@ local function on_place(v, is_craftitem)
 		end
 	end
 end
-for _,v in ipairs({'doors:door_wood','doors:door_glass','doors:door_steel','doors:door_obsidian_glass'}) do
+for _,v in ipairs({'doors:door_wood','doors:door_glass','doors:door_steel','doors:door_obsidian_glass','farming:tomato','farming:cucumber'}) do
 	on_place(v,1);
 end
 for _,v in ipairs({
