@@ -146,11 +146,11 @@ function chat3.send(name, msg, prefix, source)
 			local is_in, fname = factions.is_player_in(name)
 			local namec = get_colored_name(name)
 			local level = skyblock.feats.get_level(name) or 0
-			local msg_new = "<lvl "..level.."> <<"..namec..">> "..msg
+			local msg_new = "<lvl "..level.."> <<"..namec..">> "
 			if is_in == true then 
-				msg_new = "<lvl " .. level .. "> ["..fname.."] <<"..namec..">> "..msg
+				msg_new = "<lvl "..level.. "> ["..fname.."] <<"..namec..">> "
 			end
-			local send = chat3.colorize(rname, colour, msg_new)
+			local send = msg_new..chat3.colorize(rname, colour, msg)
 			if prefix then
 				send = prefix..send
 			end
